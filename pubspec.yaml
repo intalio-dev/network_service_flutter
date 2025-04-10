@@ -17,7 +17,7 @@ dependencies:
   freezed_annotation: ^2.4.4
   core_utils:
     git:
-      url: https://source.intalio.com/etgs-qatar/shared_group/flutter_packages/core_utils_flutter.git
+      url: https://github.com/intalio-dev/core_utils_flutter.git
       ref: main
 
 dev_dependencies:
