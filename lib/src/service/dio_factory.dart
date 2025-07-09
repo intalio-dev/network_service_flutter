@@ -14,6 +14,10 @@ class DioFactory {
     this.headers,
   });
 
+  static void setDio(Dio dio) {
+    _dio = dio;
+  }
+
   // Getter to initialize Dio if needed
   static Dio get dio {
     if (_dio == null) {
