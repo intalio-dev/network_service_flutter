@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import 'default_headers_interceptor.dart';
 
@@ -39,16 +40,18 @@ class DioFactory {
     );
 
     // Add interceptors to the Dio instance
-    _dio!.interceptors.addAll([
-      LogInterceptor(
-        responseBody: true,
-        error: true,
-        requestHeader: false,
-        responseHeader: false,
-        request: false,
-        requestBody: true,
-      ),
-      DefaultHeadersInterceptor(dio: _dio!, headers: headers),
-    ]);
+    if(kDebugMode){
+      _dio!.interceptors.addAll([
+        LogInterceptor(
+          responseBody: true,
+          error: true,
+          requestHeader: false,
+          responseHeader: false,
+          request: false,
+          requestBody: true,
+        ),
+        DefaultHeadersInterceptor(dio: _dio!, headers: headers),
+      ]);
+    }
   }
 }
