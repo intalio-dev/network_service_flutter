@@ -68,6 +68,7 @@ abstract class NetworkExceptions with _$NetworkExceptions {
   static NetworkExceptions handleResponse(Response? response) {
     dynamic data = response?.data;
 
+    // Decode string JSON if needed
     if (data is String) {
       try {
         data = jsonDecode(data);
@@ -76,13 +77,24 @@ abstract class NetworkExceptions with _$NetworkExceptions {
       }
     }
 
-    if (data is! Map<String, dynamic>) {
-      data = {};
+    // Safely cast to Map<String, dynamic>
+    Map<String, dynamic> normalizedData = {};
+    if (data is Map) {
+      normalizedData = Map<String, dynamic>.from(
+        data.map((key, value) => MapEntry(key.toString(), value)),
+      );
     }
 
     final NetworkBaseModel baseModel = NetworkBaseModel.fromJson(
-      data,
-      (json) => json as Map<String, dynamic>?,
+      normalizedData,
+          (json) {
+        if (json is Map) {
+          return Map<String, dynamic>.from(
+            json.map((k, v) => MapEntry(k.toString(), v)),
+          );
+        }
+        return null;
+      },
     );
 
     NetworkErrorDetails errorMessage = NetworkErrorDetails(
