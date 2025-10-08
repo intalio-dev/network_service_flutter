@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -65,8 +66,22 @@ abstract class NetworkExceptions with _$NetworkExceptions {
       NetworkErrorDetails errorDetails) = UnexpectedError;
 
   static NetworkExceptions handleResponse(Response? response) {
+    dynamic data = response?.data;
+
+    if (data is String) {
+      try {
+        data = jsonDecode(data);
+      } catch (_) {
+        data = {};
+      }
+    }
+
+    if (data is! Map<String, dynamic>) {
+      data = {};
+    }
+
     final NetworkBaseModel baseModel = NetworkBaseModel.fromJson(
-      response?.data ?? {},
+      data,
       (json) => json as Map<String, dynamic>?,
     );
 
@@ -138,7 +153,7 @@ abstract class NetworkExceptions with _$NetworkExceptions {
           return NetworkExceptions.notAcceptable(dioError);
         case DioExceptionType.connectionError:
           return NetworkExceptions.noInternetConnection(dioError);
-        }
+      }
     } else if (error is SocketException) {
       dioError = NetworkErrorDetails(
         message: error.message,
